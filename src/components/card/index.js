@@ -1,6 +1,6 @@
 import "./css/index.css";
 import { Card, Tooltip } from "antd";
-import { check, cross, marketcardimg, profile, thumb} from "../../assets";
+import { check, cross, marketcardimg, profile, thumb, watchedIcon, likedIcon} from "../../assets";
 import { Button, Space, Typography } from "antd";
 import { EyeOutlined, LikeOutlined } from "@ant-design/icons";
 import ButtonComponent from "../button";
@@ -15,6 +15,8 @@ import profileimg from "../../assets/images/profile1.png";
 import { ETHTOUSD, MATICTOUSD } from "../../utills/currencyConverter";
 import { useSelector } from "react-redux";
 import { ToastMessage } from "../../components";
+import { getSession } from "../../config/deepmotion";
+import { downloadVideo } from "../../config/deepmotion";
 
 const CardCompnent = ({
   image,
@@ -47,6 +49,8 @@ const CardCompnent = ({
   fixCopies,
   id,
   isAuction,
+  isEmote,
+  rid,
 }) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,6 +87,20 @@ const CardCompnent = ({
     setIsOfferModalOpen(false);
     setIsNftModalOpen(false);
   };
+
+  //handle download
+  const handleDownloadClick = async () => {
+    const res = await getSession();
+    if (res) {
+      const response = await downloadVideo(rid);
+      if (response) {
+        window.location.href = response.fbx;
+      } else {
+        ToastMessage("There is some Error", "", "error");
+      }
+    }
+  };
+
   // console.log("userProfile", userProfile, image);
   const location = useLocation();
   // console.log("userId", userId, location.pathname);
@@ -160,16 +178,16 @@ const CardCompnent = ({
           />
         }
       >
-        <Space direction="vertical" size={8} style={{ width: "100%" }}>
-        <Space>
-          <EyeOutlined style={{ fontSize: 10, color: "#1890ff" }} />
-          <p>7.1k watched</p>
+        <Space direction="horizontal" style={{ width: "100%" ,top:"10px",left:"10px",position:"absolute" }}>
+        <Space direction="vertical">
+          <img src={likedIcon} alt="Liked" style={{color: "#756E6E"}} />
+          <p style={{fontSize: 8}}>1.5k+</p>
         </Space>
-        <Space>
-          <LikeOutlined style={{ fontSize: 10, color: "#1890ff" }} />
-          <p>1.5k liked</p>
+        <Space direction="vertical">
+          <img src={watchedIcon} alt="Watched" style={{color: "#756E6E"}}/>
+          <p style={{fontSize: 8}}>7.1k+</p>
         </Space>
-      </Space>
+        </Space>
         {marketplacecard ? (
           <>
             <div className="price-wrapper d-flex justify-content-between">
@@ -443,6 +461,16 @@ const CardCompnent = ({
                 >
                   Go to Collection
                 </Button>
+                {isOwner && isEmote ? (
+                  <Button
+                    className="mt-2 collectionBtn"
+                    onClick={handleDownloadClick}
+                  >
+                    Download Fbx
+                  </Button>
+                ) : (
+                  ""
+                )}
               </>
             )}
           </>

@@ -91,12 +91,8 @@ const MintNft = () => {
     setCreatorEarningModal(false);
   };
   const handleSplitOwnership = () => {
-    if (userData?.isLogged) {
-      setCreatorEarningModal(true);
-      console.log(creatorEarningModal)
-    } else {
-      navigate("/login");
-    }
+    setCreatorEarningModal(true);
+    console.log(creatorEarningModal)
   };
 
   const mintCall = async (supply, royalty) => {
@@ -159,7 +155,7 @@ const MintNft = () => {
         Number(values.supply),
         Number(values.royalty * 100)
       );
-      console.log(Number(tokenid));
+      console.log("ISEMOTE", createNft.isEmote);
 
       if (Number(tokenid)) {
         CreateNft({
@@ -174,6 +170,11 @@ const MintNft = () => {
             supply: Number(values.supply),
             walletAddress: values.walletAddress,
             status: true,
+            isEmote: createNft.isEmote,
+            rid:
+              createNft && createNft.download.rid
+                ? createNft.download.rid
+                : "rid",
             royalty: Number(values.royalty * 100),
             user_id: values.id,
           },
@@ -338,6 +339,12 @@ const MintNft = () => {
                 <p className={`${textColor2} m-0 fs-6`}>Non Fungible Token</p>
               </div>
             </div>
+            <div
+                  style={{ border: "1px solid  #B23232" }}
+                  className="p-1 mt-4 text-center rounded-3"
+                >
+                  <span className={`${textColor2}`} onClick={() => navigate(`/collections/${userData?.id}`)}>Go to Collection</span>
+                </div>
           </Col>
         </Row>
         <div className="d-flex align-items-center">
